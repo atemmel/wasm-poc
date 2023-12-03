@@ -23,15 +23,4 @@
         };
     </script>
     <script async src="wasm-poc.js"></script>
-    <script type='text/javascript'>
-        const refit = () => {
-          const canvas = document.getElementById('canvas');
-          canvas.height = window.innerHeight;
-          canvas.width = window.innerWidth;
-        }
-        //addEventListener("resize", refit);
-        for(let i = 1; i < 10; i++) {
-          setTimeout(refit, 100 * i);
-        }
-    </script>
 </body>

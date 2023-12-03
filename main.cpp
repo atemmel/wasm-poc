@@ -26,13 +26,6 @@ auto vy = 5;
 
 SDL_Window *window;
 
-auto update_screen_size(int w, int h) -> void {
-    /* glViewport(0, 0, w, h);*/
-    SDL_SetWindowSize(window, w, h);
-    width = w;
-    height = h;
-}
-
 auto main_loop(SDL_Renderer *renderer) -> bool {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -41,10 +34,6 @@ auto main_loop(SDL_Renderer *renderer) -> bool {
             emscripten_cancel_main_loop();
 #endif
             return false;
-        } else if (event.type == SDL_WINDOWEVENT) {
-            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                update_screen_size(event.window.data1, event.window.data2);
-            }
         }
     }
 
@@ -69,15 +58,6 @@ auto main_loop(SDL_Renderer *renderer) -> bool {
     return true;
 }
 
-auto emscWindowSizeChanged(void *window) -> void {
-    auto my_window = (SDL_Window *)window;
-    int width = width, height = height;
-#ifdef __EMSCRIPTEN__
-    // emscripten_get_canvas_element_size("canvas", &width, &height);
-#endif
-    SDL_SetWindowSize(my_window, width, height);
-}
-
 auto run_main_loop(void *renderer) -> void {
     main_loop((SDL_Renderer *)renderer);
 }
@@ -95,8 +75,6 @@ auto main(int argc, char **argv) -> int {
     SDL_SetRenderDrawColor(renderer, 69, 69, 69, 255);
 
 #ifdef __EMSCRIPTEN__
-    // emscripten_set_resize_callback(nullptr, nullptr, false,
-    // emscWindowSizeChanged);
     emscripten_set_main_loop_arg(run_main_loop, (void *)renderer, 0, true);
 #else
     while (main_loop(renderer)) {
